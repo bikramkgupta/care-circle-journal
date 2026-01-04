@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import * as dotenv from 'dotenv';
 import { prisma } from '@care-circle/shared';
+import { seedDemoData } from './lib/demo-seed';
 
 dotenv.config();
 
@@ -38,7 +39,14 @@ async function main() {
   try {
     await prisma.$connect();
     console.log('✅ Connected to database');
-    
+
+    if (process.env.DEMO_SEED_ON_BOOT === 'true') {
+      const days = Number(process.env.DEMO_SEED_DAYS) || 30;
+      seedDemoData({ days }).catch((error) => {
+        console.error('❌ Demo seed failed:', error);
+      });
+    }
+
     app.listen(port, () => {
       console.log(`🚀 Server running on http://localhost:${port}`);
     });
