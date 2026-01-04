@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import { EntryType, Role } from '@prisma/client';
+import { EntryType, Prisma, Role } from '@prisma/client';
 import { prisma } from '@care-circle/shared';
 
 const DEMO_EMAIL = 'demo@example.com';
@@ -15,9 +15,9 @@ const toUtcDate = (base: Date, hour: number, minute: number) =>
   new Date(Date.UTC(base.getUTCFullYear(), base.getUTCMonth(), base.getUTCDate(), hour, minute, 0, 0));
 
 export const seedDemoData = async ({ days = 30 }: SeedOptions = {}) => {
-  const [lock] = await prisma.$queryRaw<{ pg_try_advisory_lock: boolean }[]>(
-    `SELECT pg_try_advisory_lock(${DEMO_LOCK_ID}) AS pg_try_advisory_lock`
-  );
+  const [lock] = await prisma.$queryRaw<{ pg_try_advisory_lock: boolean }[]>`
+    SELECT pg_try_advisory_lock(${DEMO_LOCK_ID}) AS pg_try_advisory_lock
+  `;
 
   if (!lock?.pg_try_advisory_lock) {
     console.log('ℹ️ Demo seed already running, skipping');
@@ -81,11 +81,13 @@ export const seedDemoData = async ({ days = 30 }: SeedOptions = {}) => {
     }
 
     const today = new Date();
-    const entries = Array.from({ length: days }).flatMap((_, index) => {
+    const entries: Prisma.EntryCreateManyInput[] = [];
+
+    for (let index = 0; index < days; index += 1) {
       const date = new Date(today);
       date.setUTCDate(today.getUTCDate() - index);
 
-      const dailyEntries = [
+      entries.push(
         {
           careProfileId: profile.id,
           authorId: user.id,
@@ -112,11 +114,11 @@ export const seedDemoData = async ({ days = 30 }: SeedOptions = {}) => {
           structuredPayload: { label: 'Play time', duration_minutes: 60 },
           tags: { context: 'home' },
           moodScore: 4,
-        },
-      ];
+        }
+      );
 
       if (index % 3 === 0) {
-        dailyEntries.push({
+        entries.push({
           careProfileId: profile.id,
           authorId: user.id,
           type: EntryType.SYMPTOM,
@@ -126,9 +128,7 @@ export const seedDemoData = async ({ days = 30 }: SeedOptions = {}) => {
           moodScore: 2,
         });
       }
-
-      return dailyEntries;
-    });
+    }
 
     await prisma.entry.createMany({ data: entries });
     console.log(`✅ Demo data seeded (${entries.length} entries).`);
@@ -136,6 +136,6 @@ export const seedDemoData = async ({ days = 30 }: SeedOptions = {}) => {
     console.error('❌ Demo seed failed:', error);
     throw error;
   } finally {
-    await prisma.$executeRaw(`SELECT pg_advisory_unlock(${DEMO_LOCK_ID})`);
+    await prisma.$executeRaw`SELECT pg_advisory_unlock(${DEMO_LOCK_ID})`;
   }
 };
