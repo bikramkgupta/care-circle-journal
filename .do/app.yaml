@@ -89,6 +89,7 @@ services:
       - key: NODE_ENV
         value: production
       - key: NEXT_PUBLIC_API_URL
+        scope: RUN_AND_BUILD_TIME
         value: ${APP_URL}/api
 
 # Worker: Background Jobs
