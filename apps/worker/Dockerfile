@@ -32,6 +32,9 @@ FROM node:22-alpine AS runner
 
 WORKDIR /app
 
+# Install OpenSSL for Prisma
+RUN apk add --no-cache openssl libc6-compat
+
 # Install pnpm
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
@@ -45,9 +48,12 @@ COPY apps/api/package.json ./apps/api/
 RUN pnpm install --frozen-lockfile --prod
 
 # Copy built files
-COPY --from=builder /app/packages/shared/src ./packages/shared/src
+COPY --from=builder /app/packages/shared ./packages/shared
 COPY --from=builder /app/apps/worker/dist ./apps/worker/dist
 COPY --from=builder /app/node_modules/.pnpm/@prisma+client*/node_modules/.prisma ./node_modules/.prisma
+# Update shared package.json to point to JS files for production
+RUN sed -i 's|"main": "./src/index.ts"|"main": "./src/index.js"|' packages/shared/package.json && \
+    sed -i 's|"types": "./src/index.ts"|"types": "./src/index.d.ts"|' packages/shared/package.json
 
 # Set environment
 ENV NODE_ENV=production
@@ -61,4 +67,3 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
 
 # Start the application
 CMD ["node", "apps/worker/dist/index.js"]
-
