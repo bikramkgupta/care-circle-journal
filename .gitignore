@@ -1,0 +1,10 @@
+.env.secrets
+.env.local
+apps/.env
+.env
+node_modules/
+*.log
+dist/
+*.tsbuildinfo
+.cursor/
+.devcontainer/

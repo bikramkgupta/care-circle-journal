@@ -1,0 +1,1 @@
+{"version":3,"file":"gradient.d.ts","sourceRoot":"","sources":["gradient.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,kBAAkB;IACjC,WAAW,EAAE,MAAM,CAAC;IACpB,YAAY,EAAE,GAAG,CAAC;IAClB,SAAS,EAAE,MAAM,CAAC;CACnB;AAED,eAAO,MAAM,oBAAoB,GAC/B,iBAAiB,MAAM,EACvB,MAAM,MAAM,EACZ,SAAS,GAAG,EAAE,KACb,OAAO,CAAC,kBAAkB,CAmB5B,CAAC"}

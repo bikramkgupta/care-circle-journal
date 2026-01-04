@@ -1,0 +1,40 @@
+name: care-circle-debug
+region: nyc
+
+workers:
+  - name: debug
+    image:
+      registry_type: GHCR
+      registry: ghcr.io
+      repository: bikramkgupta/do-app-debug-container-python
+      tag: latest
+    instance_size_slug: apps-s-1vcpu-1gb
+    envs:
+      - key: DATABASE_URL
+        scope: RUN_TIME
+        value: ${db.DATABASE_URL}
+      - key: SPACES_ENDPOINT
+        value: https://nyc3.digitaloceanspaces.com
+      - key: SPACES_ACCESS_KEY
+        scope: RUN_TIME
+        type: SECRET
+        value: 
+      - key: SPACES_SECRET_KEY
+        scope: RUN_TIME
+        type: SECRET
+        value: 
+      - key: SPACES_BUCKET
+        value: care-circle-media
+      - key: GRADIENT_API_KEY
+        scope: RUN_TIME
+        type: SECRET
+        value: 
+
+databases:
+  - name: db
+    engine: PG
+    production: true
+    cluster_name: care-circle-db
+    db_name: care_journal
+    db_user: care_app_user
+

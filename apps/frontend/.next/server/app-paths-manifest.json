@@ -1,0 +1,12 @@
+{
+  "/_not-found": "app/_not-found.js",
+  "/care-profiles/page": "app/care-profiles/page.js",
+  "/health/route": "app/health/route.js",
+  "/login/page": "app/login/page.js",
+  "/page": "app/page.js",
+  "/signup/page": "app/signup/page.js",
+  "/demo/page": "app/demo/page.js",
+  "/care-profiles/[id]/insights/page": "app/care-profiles/[id]/insights/page.js",
+  "/care-profiles/[id]/moments/page": "app/care-profiles/[id]/moments/page.js",
+  "/care-profiles/[id]/timeline/page": "app/care-profiles/[id]/timeline/page.js"
+}

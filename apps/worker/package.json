@@ -1,0 +1,22 @@
+{
+  "name": "@care-circle/worker",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.0",
+    "node-cron": "^3.0.0",
+    "@prisma/client": "^5.0.0",
+    "@care-circle/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node-cron": "^3.0.0",
+    "@types/node": "^20.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.0.0"
+  }
+}

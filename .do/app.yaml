@@ -1,0 +1,121 @@
+name: care-circle-journal
+region: nyc
+
+# Service: API
+services:
+  - name: api
+    dockerfile_path: apps/api/Dockerfile
+    github:
+      repo: bikramkgupta/care-circle-journal
+      branch: main
+      deploy_on_push: false
+    instance_size_slug: apps-s-1vcpu-1gb
+    instance_count: 1
+    http_port: 8080
+    routes:
+      - path: /api
+        preserve_path_prefix: false
+      - path: /auth
+        preserve_path_prefix: true
+      - path: /care-profiles
+        preserve_path_prefix: true
+      - path: /entries
+        preserve_path_prefix: true
+      - path: /summaries
+        preserve_path_prefix: true
+      - path: /media
+        preserve_path_prefix: true
+    health_check:
+      http_path: /health
+      initial_delay_seconds: 10
+      period_seconds: 10
+      timeout_seconds: 5
+      success_threshold: 1
+      failure_threshold: 3
+    envs:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        scope: RUN_TIME
+        value: ${db.DATABASE_URL}
+      - key: JWT_SECRET
+        scope: RUN_TIME
+        type: SECRET
+        value: ${JWT_SECRET}
+      - key: SPACES_ENDPOINT
+        value: https://nyc3.digitaloceanspaces.com
+      - key: SPACES_REGION
+        value: nyc3
+      - key: SPACES_BUCKET
+        value: care-circle-media
+      - key: SPACES_ACCESS_KEY
+        scope: RUN_TIME
+        type: SECRET
+        value: ${SPACES_ACCESS_KEY}
+      - key: SPACES_SECRET_KEY
+        scope: RUN_TIME
+        type: SECRET
+        value: ${SPACES_SECRET_KEY}
+      - key: GRADIENT_API_KEY
+        scope: RUN_TIME
+        type: SECRET
+        value: ${GRADIENT_API_KEY}
+      - key: GRADIENT_BASE_URL
+        value: https://inference.do-ai.run/v1
+
+  - name: frontend
+    dockerfile_path: apps/frontend/Dockerfile
+    github:
+      repo: bikramkgupta/care-circle-journal
+      branch: main
+      deploy_on_push: false
+    instance_size_slug: apps-s-1vcpu-1gb
+    instance_count: 1
+    http_port: 3000
+    routes:
+      - path: /
+    health_check:
+      http_path: /health
+      initial_delay_seconds: 10
+      period_seconds: 10
+      timeout_seconds: 5
+      success_threshold: 1
+      failure_threshold: 3
+    envs:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_API_URL
+        value: ${APP_URL}/api
+
+# Worker: Background Jobs
+workers:
+  - name: worker
+    dockerfile_path: apps/worker/Dockerfile
+    github:
+      repo: bikramkgupta/care-circle-journal
+      branch: main
+      deploy_on_push: false
+    instance_size_slug: apps-s-1vcpu-1gb
+    instance_count: 1
+    envs:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        scope: RUN_TIME
+        value: ${db.DATABASE_URL}
+      - key: GRADIENT_API_KEY
+        scope: RUN_TIME
+        type: SECRET
+        value: ${GRADIENT_API_KEY}
+      - key: GRADIENT_BASE_URL
+        value: https://inference.do-ai.run/v1
+
+# Managed PostgreSQL Database (uses bindable variables)
+databases:
+  - name: db
+    engine: PG
+    version: "16"
+    production: true
+    cluster_name: care-circle-db
+    db_name: care_journal
+    db_user: care_app_user

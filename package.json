@@ -1,0 +1,15 @@
+{
+  "name": "care-circle-journal",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --filter \"*\" dev",
+    "build": "pnpm --filter \"*\" build",
+    "lint": "pnpm --filter \"*\" lint",
+    "test": "pnpm --filter \"*\" test"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "prettier": "^3.0.0",
+    "eslint": "^8.0.0"
+  }
+}

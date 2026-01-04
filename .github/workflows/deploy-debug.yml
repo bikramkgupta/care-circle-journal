@@ -1,0 +1,31 @@
+name: Deploy Debug Container
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.do/app-debug.yaml'
+
+permissions:
+  contents: read
+
+jobs:
+  deploy-debug:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy Debug Container
+        uses: digitalocean/app_action/deploy@v2
+        env:
+          # These env vars are substituted into ${VAR} placeholders in app spec
+          SPACES_ACCESS_KEY: ${{ secrets.SPACES_ACCESS_KEY }}
+          SPACES_SECRET_KEY: ${{ secrets.SPACES_SECRET_KEY }}
+          GRADIENT_API_KEY: ${{ secrets.GRADIENT_API_KEY }}
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+          spec_path: .do/app-debug.yaml
+

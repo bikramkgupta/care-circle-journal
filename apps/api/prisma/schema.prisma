@@ -1,0 +1,133 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String              @id @default(uuid())
+  email         String              @unique
+  name          String
+  passwordHash  String
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+  ownedProfiles CareProfile[]       @relation("ProfileOwner")
+  memberships   CareProfileMember[]
+  entries       Entry[]
+
+  @@map("users")
+}
+
+model CareProfile {
+  id          String              @id @default(uuid())
+  ownerId     String
+  owner       User                @relation("ProfileOwner", fields: [ownerId], references: [id])
+  name        String
+  dateOfBirth DateTime?           @db.Date
+  notes       String?             @db.Text
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  members     CareProfileMember[]
+  entries     Entry[]
+  summaries   AiSummary[]
+  mediaAssets MediaAsset[]
+
+  @@unique([ownerId, name])
+  @@map("care_profiles")
+}
+
+enum Role {
+  OWNER
+  CAREGIVER
+  GUEST
+}
+
+model CareProfileMember {
+  id            String      @id @default(uuid())
+  careProfileId String
+  careProfile   CareProfile @relation(fields: [careProfileId], references: [id])
+  userId        String
+  user          User        @relation(fields: [userId], references: [id])
+  role          Role        @default(CAREGIVER)
+  createdAt     DateTime    @default(now())
+
+  @@unique([careProfileId, userId])
+  @@map("care_profile_members")
+}
+
+enum EntryType {
+  NOTE
+  SLEEP
+  MEAL
+  SYMPTOM
+  ACTIVITY
+  MEDICATION
+}
+
+model Entry {
+  id                String      @id @default(uuid())
+  careProfileId     String
+  careProfile       CareProfile @relation(fields: [careProfileId], references: [id])
+  authorId          String
+  author            User        @relation(fields: [authorId], references: [id])
+  timestamp         DateTime    @default(now())
+  type              EntryType
+  freeText          String      @db.Text
+  moodScore         Int?        // 1-5
+  tags              Json?       // { mood: "anxious", context: "home", category: "progress" }
+  structuredPayload Json?       // type-specific fields
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  mediaAssets       MediaAsset[]
+
+  @@index([careProfileId, timestamp])
+  @@map("entries")
+}
+
+enum MediaType {
+  PHOTO
+  AUDIO
+  DOCUMENT
+}
+
+model MediaAsset {
+  id            String      @id @default(uuid())
+  careProfileId String
+  careProfile   CareProfile @relation(fields: [careProfileId], references: [id])
+  entryId       String
+  entry         Entry       @relation(fields: [entryId], references: [id])
+  type          MediaType
+  spacesKey     String
+  mimeType      String
+  createdAt     DateTime    @default(now())
+
+  @@map("media_assets")
+}
+
+enum PeriodType {
+  DAILY
+  WEEKLY
+  MONTHLY
+}
+
+model AiSummary {
+  id            String      @id @default(uuid())
+  careProfileId String
+  careProfile   CareProfile @relation(fields: [careProfileId], references: [id])
+  periodType    PeriodType
+  periodStart   DateTime    @db.Date
+  periodEnd     DateTime    @db.Date
+  summaryText   String      @db.Text
+  insightsJson  Json        // { flags: [], positives: [], correlations: [] }
+  modelName     String
+  createdAt     DateTime    @default(now())
+
+  @@unique([careProfileId, periodType, periodStart, periodEnd])
+  @@map("ai_summaries")
+}
