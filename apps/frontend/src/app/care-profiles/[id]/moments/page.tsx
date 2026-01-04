@@ -43,14 +43,10 @@ export default function MomentsPage() {
 
   const loadMedia = async () => {
     try {
-      // For now, we'll show a placeholder since we need entries with media
-      // In a real app, you'd fetch from /care-profiles/:id/media
       const entries = await request<any[]>(`/entries/${profileId}`);
-      
-      // Filter entries that have media (for demo, we'll simulate some)
+
       const mediaItems: MediaWithUrl[] = [];
-      
-      // Simulate some media items from entries
+
       entries.forEach((entry, index) => {
         if (entry.type === 'ACTIVITY' && index % 3 === 0) {
           mediaItems.push({
@@ -77,8 +73,10 @@ export default function MomentsPage() {
 
   const filteredMedia = media.filter((item) => {
     if (filter === 'all') return true;
-    return item.entry?.tags?.context?.toLowerCase() === filter ||
-           item.entry?.tags?.category?.toLowerCase() === filter;
+    return (
+      item.entry?.tags?.context?.toLowerCase() === filter ||
+      item.entry?.tags?.category?.toLowerCase() === filter
+    );
   });
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -86,15 +84,11 @@ export default function MomentsPage() {
     if (!file) return;
 
     setUploading(true);
-    
-    // In a real app, you would:
-    // 1. Create an entry first
-    // 2. Get a presigned URL from /care-profiles/:id/media/presign
-    // 3. Upload to Spaces using the presigned URL
-    // 4. Refresh the media list
-    
+
     setTimeout(() => {
-      alert('File upload would be handled here. This requires:\n1. Creating an entry\n2. Getting presigned URL\n3. Uploading to DO Spaces');
+      alert(
+        'File upload would be handled here. This requires:\n1. Creating an entry\n2. Getting presigned URL\n3. Uploading to DO Spaces'
+      );
       setUploading(false);
     }, 1000);
   };
@@ -102,32 +96,36 @@ export default function MomentsPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="animate-pulse text-slate-500">Loading moments...</div>
+        <div className="animate-pulse text-ink-muted">Loading moments...</div>
       </div>
     );
   }
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-bold text-slate-900">Moments</h2>
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 bg-slate-100 rounded-lg p-1">
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+        <div>
+          <h2 className="text-2xl text-ink">Moments</h2>
+          <p className="text-ink-muted">Visual highlights and sensory wins from the week.</p>
+        </div>
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-2">
+            <Filter className="w-4 h-4 text-ink-faint" />
             {filterOptions.map((option) => (
               <button
                 key={option.value}
                 onClick={() => setFilter(option.value)}
-                className={`px-3 py-1.5 text-sm font-medium rounded-md transition ${
+                className={`px-4 py-2 rounded-full text-xs uppercase tracking-[0.18em] border transition ${
                   filter === option.value
-                    ? 'bg-white text-slate-900 shadow-sm'
-                    : 'text-slate-500 hover:text-slate-700'
+                    ? 'border-[rgba(198,107,78,0.5)] bg-[rgba(198,107,78,0.12)] text-clay'
+                    : 'border-transparent text-ink-faint hover:border-[rgba(94,82,70,0.2)] hover:text-ink'
                 }`}
               >
                 {option.label}
               </button>
             ))}
           </div>
-          <label className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition cursor-pointer shadow-lg shadow-blue-500/25">
+          <label className="btn-primary flex items-center gap-2 cursor-pointer">
             <Upload className="w-5 h-5" />
             <span>{uploading ? 'Uploading...' : 'Upload'}</span>
             <input
@@ -142,21 +140,16 @@ export default function MomentsPage() {
       </div>
 
       {filteredMedia.length === 0 ? (
-        <div className="text-center py-16 bg-white rounded-xl border border-slate-200">
-          <ImageIcon className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-slate-700 mb-2">No moments yet</h3>
-          <p className="text-slate-500 mb-6 max-w-md mx-auto">
+        <div className="card-inset text-center py-16">
+          <ImageIcon className="w-16 h-16 text-ink-faint mx-auto mb-4" />
+          <h3 className="text-lg text-ink mb-2">No moments yet</h3>
+          <p className="text-ink-muted mb-6 max-w-md mx-auto">
             Capture special moments by uploading photos or audio recordings with your entries.
           </p>
-          <label className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition cursor-pointer">
+          <label className="btn-primary inline-flex items-center gap-2 cursor-pointer">
             <Upload className="w-5 h-5" />
             Upload First Moment
-            <input
-              type="file"
-              accept="image/*,audio/*"
-              onChange={handleFileUpload}
-              className="hidden"
-            />
+            <input type="file" accept="image/*,audio/*" onChange={handleFileUpload} className="hidden" />
           </label>
         </div>
       ) : (
@@ -165,15 +158,13 @@ export default function MomentsPage() {
             <button
               key={item.id}
               onClick={() => setSelectedMedia(item)}
-              className="aspect-square bg-slate-100 rounded-xl overflow-hidden relative group hover:shadow-lg transition"
+              className="aspect-square card-inset overflow-hidden relative group"
             >
-              {/* Placeholder for image - in real app, load from Spaces URL */}
-              <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-blue-100 to-purple-100">
-                <ImageIcon className="w-12 h-12 text-slate-400" />
+              <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[rgba(63,107,102,0.2)] to-[rgba(198,107,78,0.2)]">
+                <ImageIcon className="w-12 h-12 text-ink-faint" />
               </div>
-              
-              {/* Overlay with date */}
-              <div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition">
+
+              <div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-[rgba(33,27,22,0.8)] to-transparent opacity-0 group-hover:opacity-100 transition">
                 <p className="text-white text-sm font-medium truncate">
                   {item.entry?.freeText?.slice(0, 50)}
                 </p>
@@ -187,23 +178,22 @@ export default function MomentsPage() {
         </div>
       )}
 
-      {/* Lightbox Modal */}
       {selectedMedia && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(33,27,22,0.85)] p-4">
           <button
             onClick={() => setSelectedMedia(null)}
             className="absolute top-4 right-4 p-2 text-white/70 hover:text-white transition"
           >
             <X className="w-8 h-8" />
           </button>
-          
-          <div className="max-w-4xl w-full bg-white rounded-2xl overflow-hidden">
-            <div className="aspect-video bg-slate-100 flex items-center justify-center">
-              <ImageIcon className="w-24 h-24 text-slate-300" />
+
+          <div className="max-w-4xl w-full card overflow-hidden">
+            <div className="aspect-video bg-[rgba(94,82,70,0.12)] flex items-center justify-center">
+              <ImageIcon className="w-24 h-24 text-ink-faint" />
             </div>
             <div className="p-6">
-              <p className="text-slate-700 mb-2">{selectedMedia.entry?.freeText}</p>
-              <p className="text-slate-400 text-sm flex items-center gap-2">
+              <p className="text-ink-muted mb-2">{selectedMedia.entry?.freeText}</p>
+              <p className="text-ink-faint text-sm flex items-center gap-2">
                 <Calendar className="w-4 h-4" />
                 {new Date(selectedMedia.createdAt).toLocaleDateString('en-US', {
                   weekday: 'long',
@@ -219,4 +209,3 @@ export default function MomentsPage() {
     </div>
   );
 }
-

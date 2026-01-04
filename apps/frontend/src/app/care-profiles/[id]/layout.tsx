@@ -44,32 +44,27 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
-      <header className="bg-white/80 backdrop-blur-sm border-b border-slate-200 sticky top-0 z-10">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
+    <div className="min-h-screen">
+      <header className="bg-white/70 backdrop-blur-md border-b border-mist sticky top-0 z-10">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="flex flex-wrap items-center justify-between gap-4 py-4">
             <div className="flex items-center gap-4">
-              <Link
-                href="/care-profiles"
-                className="flex items-center gap-1 text-slate-500 hover:text-slate-700"
-              >
+              <Link href="/care-profiles" className="chip flex items-center gap-2">
                 <ArrowLeft className="w-4 h-4" />
-                <span className="text-sm">Back</span>
+                <span>Back</span>
               </Link>
-              <div className="h-6 w-px bg-slate-200" />
-              <h1 className="font-bold text-slate-900">
-                {profile?.name || 'Loading...'}
-              </h1>
+              <div className="h-8 w-px bg-[rgba(94,82,70,0.2)]" />
+              <div>
+                <p className="text-xs uppercase tracking-[0.2em] text-ink-faint">Profile</p>
+                <h1 className="text-lg text-ink">{profile?.name || 'Loading...'}</h1>
+              </div>
             </div>
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-2 text-slate-500 hover:text-slate-700"
-            >
+            <button onClick={handleLogout} className="btn-outline flex items-center gap-2">
               <LogOut className="w-4 h-4" />
               <span className="text-sm">Sign out</span>
             </button>
           </div>
-          <nav className="flex gap-1">
+          <nav className="flex flex-wrap gap-2 pb-4">
             {navItems.map((item) => {
               const isActive = pathname === item.href;
               const Icon = item.icon;
@@ -77,10 +72,10 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition ${
+                  className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium border transition ${
                     isActive
-                      ? 'border-blue-600 text-blue-600'
-                      : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
+                      ? 'border-[rgba(198,107,78,0.6)] bg-[rgba(198,107,78,0.12)] text-clay'
+                      : 'border-transparent text-ink-muted hover:border-[rgba(94,82,70,0.2)] hover:bg-white/60'
                   }`}
                 >
                   <Icon className="w-4 h-4" />
@@ -91,8 +86,7 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
           </nav>
         </div>
       </header>
-      <main className="max-w-6xl mx-auto px-4 py-6">{children}</main>
+      <main className="max-w-6xl mx-auto px-6 py-8">{children}</main>
     </div>
   );
 }
-

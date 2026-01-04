@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { request } from '@/lib/api';
-import { Plus, Users, Calendar, LogOut } from 'lucide-react';
+import { Plus, Users, Calendar, LogOut, Sparkles } from 'lucide-react';
 
 interface CareProfile {
   id: string;
@@ -29,7 +29,7 @@ export default function CareProfilesPage() {
       router.push('/login');
       return;
     }
-    
+
     loadProfiles();
   }, [router]);
 
@@ -47,7 +47,7 @@ export default function CareProfilesPage() {
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     setCreating(true);
-    
+
     try {
       await request('/care-profiles', {
         method: 'POST',
@@ -72,80 +72,77 @@ export default function CareProfilesPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <div className="animate-pulse text-slate-500">Loading...</div>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-pulse text-ink-muted">Loading...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
-      <header className="bg-white/80 backdrop-blur-sm border-b border-slate-200 sticky top-0 z-10">
-        <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
-          <h1 className="text-xl font-bold text-slate-900">CareCircle Journal</h1>
-          <button 
-            onClick={handleLogout}
-            className="flex items-center gap-2 text-slate-500 hover:text-slate-700"
-          >
+    <div className="min-h-screen">
+      <header className="bg-white/70 backdrop-blur-md border-b border-mist sticky top-0 z-10">
+        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-2xl bg-[rgba(198,107,78,0.18)] flex items-center justify-center text-clay font-semibold">
+              CC
+            </div>
+            <div>
+              <h1 className="text-lg text-ink">CareCircle Journal</h1>
+              <p className="text-xs uppercase tracking-[0.2em] text-ink-faint">Care Profiles</p>
+            </div>
+          </div>
+          <button onClick={handleLogout} className="flex items-center gap-2 text-ink-muted hover:text-ink">
             <LogOut className="w-4 h-4" />
             <span className="text-sm">Sign out</span>
           </button>
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-8">
+      <main className="max-w-6xl mx-auto px-6 py-10 space-y-8">
+        <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h2 className="text-2xl font-bold text-slate-900">Care Profiles</h2>
-            <p className="text-slate-500 mt-1">Select or create a profile to start logging</p>
+            <h2 className="text-3xl text-ink">Care profiles</h2>
+            <p className="text-ink-muted mt-1">Select a profile or start a new one.</p>
           </div>
-          <button
-            onClick={() => setShowCreate(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition shadow-lg shadow-blue-500/25"
-          >
+          <button onClick={() => setShowCreate(true)} className="btn-primary flex items-center gap-2">
             <Plus className="w-5 h-5" />
-            <span>New Profile</span>
+            <span>New profile</span>
           </button>
         </div>
 
         {showCreate && (
-          <div className="mb-8 bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
-            <h3 className="text-lg font-semibold text-slate-900 mb-4">Create New Profile</h3>
+          <div className="card p-6">
+            <div className="flex items-center gap-2 text-sage mb-4">
+              <Sparkles className="w-5 h-5" />
+              <h3 className="text-lg text-ink">Create new profile</h3>
+            </div>
             <form onSubmit={handleCreate} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">Name</label>
+                <label className="block text-sm font-medium text-ink-muted mb-2">Name</label>
                 <input
                   type="text"
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
                   required
-                  className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900"
-                  placeholder="e.g., Alex"
+                  className="input w-full"
+                  placeholder="e.g. Alex"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">Notes (optional)</label>
+                <label className="block text-sm font-medium text-ink-muted mb-2">Notes (optional)</label>
                 <textarea
                   value={newNotes}
                   onChange={(e) => setNewNotes(e.target.value)}
                   rows={3}
-                  className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900"
+                  className="input w-full"
                   placeholder="Any helpful context..."
                 />
               </div>
-              <div className="flex gap-3">
-                <button
-                  type="submit"
-                  disabled={creating}
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white rounded-lg transition"
-                >
+              <div className="flex flex-wrap gap-3">
+                <button type="submit" disabled={creating} className="btn-primary">
                   {creating ? 'Creating...' : 'Create Profile'}
                 </button>
-                <button
-                  type="button"
-                  onClick={() => setShowCreate(false)}
-                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition"
-                >
+                <button type="button" onClick={() => setShowCreate(false)} className="btn-outline">
                   Cancel
                 </button>
               </div>
@@ -154,16 +151,13 @@ export default function CareProfilesPage() {
         )}
 
         {profiles.length === 0 ? (
-          <div className="text-center py-16">
-            <Users className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-slate-700 mb-2">No profiles yet</h3>
-            <p className="text-slate-500 mb-6">Create your first care profile to get started</p>
-            <button
-              onClick={() => setShowCreate(true)}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition"
-            >
+          <div className="card-inset text-center py-16">
+            <Users className="w-16 h-16 text-ink-faint mx-auto mb-4" />
+            <h3 className="text-lg text-ink mb-2">No profiles yet</h3>
+            <p className="text-ink-muted mb-6">Create your first care profile to get started.</p>
+            <button onClick={() => setShowCreate(true)} className="btn-primary inline-flex items-center gap-2">
               <Plus className="w-5 h-5" />
-              Create Profile
+              Create profile
             </button>
           </div>
         ) : (
@@ -172,28 +166,26 @@ export default function CareProfilesPage() {
               <Link
                 key={profile.id}
                 href={`/care-profiles/${profile.id}/timeline`}
-                className="bg-white rounded-xl border border-slate-200 p-6 hover:shadow-lg hover:border-blue-200 transition group"
+                className="card p-6 group transition hover:-translate-y-1"
               >
                 <div className="flex items-start justify-between">
-                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                    <span className="text-xl font-bold text-blue-600">
+                  <div className="w-12 h-12 rounded-2xl bg-[rgba(63,107,102,0.18)] flex items-center justify-center">
+                    <span className="text-xl font-semibold text-sage">
                       {profile.name.charAt(0).toUpperCase()}
                     </span>
                   </div>
-                  <span className="text-xs text-slate-400 flex items-center gap-1">
+                  <span className="text-xs text-ink-faint flex items-center gap-1">
                     <Calendar className="w-3 h-3" />
                     {new Date(profile.createdAt).toLocaleDateString()}
                   </span>
                 </div>
-                <h3 className="text-lg font-semibold text-slate-900 mt-4 group-hover:text-blue-600 transition">
+                <h3 className="text-xl text-ink mt-4 group-hover:text-clay transition">
                   {profile.name}
                 </h3>
                 {profile.notes && (
-                  <p className="text-sm text-slate-500 mt-2 line-clamp-2">{profile.notes}</p>
+                  <p className="text-sm text-ink-muted mt-2 line-clamp-2">{profile.notes}</p>
                 )}
-                <div className="mt-4 text-sm text-blue-600 font-medium">
-                  View timeline →
-                </div>
+                <div className="mt-4 text-sm text-sage font-semibold">View timeline →</div>
               </Link>
             ))}
           </div>
@@ -202,4 +194,3 @@ export default function CareProfilesPage() {
     </div>
   );
 }
-

@@ -37,12 +37,12 @@ const typeIcons: Record<string, any> = {
 };
 
 const typeColors: Record<string, string> = {
-  NOTE: 'bg-slate-100 text-slate-600',
-  SLEEP: 'bg-indigo-100 text-indigo-600',
-  MEAL: 'bg-amber-100 text-amber-600',
-  SYMPTOM: 'bg-red-100 text-red-600',
-  ACTIVITY: 'bg-green-100 text-green-600',
-  MEDICATION: 'bg-purple-100 text-purple-600',
+  NOTE: 'bg-[rgba(231,217,201,0.7)] text-[color:var(--ink-muted)]',
+  SLEEP: 'bg-[rgba(63,107,102,0.18)] text-[color:var(--sage)]',
+  MEAL: 'bg-[rgba(215,167,79,0.2)] text-[#8a5a1f]',
+  SYMPTOM: 'bg-[rgba(198,107,78,0.2)] text-[#8b3f2b]',
+  ACTIVITY: 'bg-[rgba(63,107,102,0.16)] text-[#2f4f4b]',
+  MEDICATION: 'bg-[rgba(94,82,70,0.16)] text-[#5f483a]',
 };
 
 const moodEmojis = ['😢', '😔', '😐', '🙂', '😊'];
@@ -142,7 +142,7 @@ export default function TimelinePage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="animate-pulse text-slate-500">Loading timeline...</div>
+        <div className="animate-pulse text-ink-muted">Loading timeline...</div>
       </div>
     );
   }
@@ -150,10 +150,10 @@ export default function TimelinePage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-bold text-slate-900">Timeline</h2>
+        <h2 className="text-2xl text-ink">Timeline</h2>
         <button
           onClick={() => setShowCreate(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition shadow-lg shadow-blue-500/25"
+          className="btn-primary flex items-center gap-2"
         >
           <Plus className="w-5 h-5" />
           New Entry
@@ -161,11 +161,11 @@ export default function TimelinePage() {
       </div>
 
       {showCreate && (
-        <div className="mb-6 bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">New Entry</h3>
+        <div className="mb-6 card p-6">
+          <h3 className="text-lg text-ink mb-4">New Entry</h3>
           <form onSubmit={handleCreateEntry} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Type</label>
+              <label className="block text-sm font-medium text-ink-muted mb-2">Type</label>
               <div className="flex flex-wrap gap-2">
                 {Object.keys(typeIcons).map((type) => {
                   const Icon = typeIcons[type];
@@ -174,42 +174,42 @@ export default function TimelinePage() {
                       key={type}
                       type="button"
                       onClick={() => setEntryType(type)}
-                      className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition ${
+                      className={`flex items-center gap-2 px-3 py-2 rounded-full border text-sm transition ${
                         entryType === type
-                          ? 'border-blue-500 bg-blue-50 text-blue-700'
-                          : 'border-slate-200 hover:border-slate-300 text-slate-600'
+                          ? 'border-[rgba(198,107,78,0.5)] bg-[rgba(198,107,78,0.12)] text-clay'
+                          : 'border-[rgba(94,82,70,0.2)] text-ink-muted hover:border-[rgba(94,82,70,0.4)]'
                       }`}
                     >
                       <Icon className="w-4 h-4" />
-                      <span className="text-sm capitalize">{type.toLowerCase()}</span>
+                      <span className="capitalize">{type.toLowerCase()}</span>
                     </button>
                   );
                 })}
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Note</label>
+              <label className="block text-sm font-medium text-ink-muted mb-2">Note</label>
               <textarea
                 value={freeText}
                 onChange={(e) => setFreeText(e.target.value)}
                 required
                 rows={3}
-                className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900"
+                className="input w-full text-ink"
                 placeholder="What happened?"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Mood (optional)</label>
+              <label className="block text-sm font-medium text-ink-muted mb-2">Mood (optional)</label>
               <div className="flex gap-2">
                 {moodEmojis.map((emoji, i) => (
                   <button
                     key={i}
                     type="button"
                     onClick={() => setMoodScore(moodScore === i + 1 ? null : i + 1)}
-                    className={`w-10 h-10 rounded-lg border text-xl transition ${
+                    className={`w-10 h-10 rounded-full border text-xl transition ${
                       moodScore === i + 1
-                        ? 'border-blue-500 bg-blue-50'
-                        : 'border-slate-200 hover:border-slate-300'
+                        ? 'border-[rgba(198,107,78,0.5)] bg-[rgba(198,107,78,0.12)]'
+                        : 'border-[rgba(94,82,70,0.2)] hover:border-[rgba(94,82,70,0.4)]'
                     }`}
                   >
                     {emoji}
@@ -217,18 +217,14 @@ export default function TimelinePage() {
                 ))}
               </div>
             </div>
-            <div className="flex gap-3">
-              <button
-                type="submit"
-                disabled={creating}
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white rounded-lg transition"
-              >
+            <div className="flex flex-wrap gap-3">
+              <button type="submit" disabled={creating} className="btn-primary">
                 {creating ? 'Saving...' : 'Save Entry'}
               </button>
               <button
                 type="button"
                 onClick={() => setShowCreate(false)}
-                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition"
+                className="btn-outline"
               >
                 Cancel
               </button>
@@ -238,14 +234,11 @@ export default function TimelinePage() {
       )}
 
       {Object.keys(groupedEntries).length === 0 ? (
-        <div className="text-center py-16 bg-white rounded-xl border border-slate-200">
-          <Clock className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-slate-700 mb-2">No entries yet</h3>
-          <p className="text-slate-500 mb-6">Start documenting by creating your first entry</p>
-          <button
-            onClick={() => setShowCreate(true)}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition"
-          >
+        <div className="card-inset text-center py-16">
+          <Clock className="w-16 h-16 text-ink-faint mx-auto mb-4" />
+          <h3 className="text-lg text-ink mb-2">No entries yet</h3>
+          <p className="text-ink-muted mb-6">Start documenting by creating your first entry.</p>
+          <button onClick={() => setShowCreate(true)} className="btn-primary inline-flex items-center gap-2">
             <Plus className="w-5 h-5" />
             Create Entry
           </button>
@@ -258,12 +251,12 @@ export default function TimelinePage() {
 
             return (
               <div key={date}>
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-slate-900">{date}</h3>
+                <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+                  <h3 className="text-xl text-ink">{date}</h3>
                   <button
                     onClick={() => generateSummary(dateStr)}
                     disabled={generatingDate === dateStr}
-                    className="flex items-center gap-2 px-3 py-1.5 text-sm bg-purple-100 hover:bg-purple-200 text-purple-700 rounded-lg transition"
+                    className="flex items-center gap-2 px-3 py-1.5 text-sm rounded-full border border-[rgba(63,107,102,0.35)] text-sage bg-[rgba(63,107,102,0.12)] hover:bg-[rgba(63,107,102,0.2)] transition"
                   >
                     <Sparkles className="w-4 h-4" />
                     {generatingDate === dateStr
@@ -275,22 +268,22 @@ export default function TimelinePage() {
                 </div>
 
                 {summary && (
-                  <div className="mb-4 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl border border-purple-100 p-5">
-                    <div className="flex items-center gap-2 mb-3">
-                      <Sparkles className="w-5 h-5 text-purple-600" />
-                      <span className="font-semibold text-purple-900">AI Summary</span>
+                  <div className="mb-4 card-inset p-5">
+                    <div className="flex items-center gap-2 mb-3 text-sage">
+                      <Sparkles className="w-5 h-5" />
+                      <span className="font-semibold">AI Summary</span>
                     </div>
-                    <p className="text-slate-700 mb-4">{summary.summaryText}</p>
+                    <p className="text-ink-muted mb-4">{summary.summaryText}</p>
                     <div className="grid gap-3 sm:grid-cols-2">
                       {summary.insightsJson.positives && summary.insightsJson.positives.length > 0 && (
                         <div>
-                          <span className="text-xs font-medium text-green-600 uppercase tracking-wide">
+                          <span className="text-xs font-medium text-sage uppercase tracking-wide">
                             Positives
                           </span>
                           <ul className="mt-1 space-y-1">
                             {summary.insightsJson.positives.map((p, i) => (
-                              <li key={i} className="text-sm text-slate-600 flex items-start gap-2">
-                                <span className="text-green-500">✓</span>
+                              <li key={i} className="text-sm text-ink-muted flex items-start gap-2">
+                                <span className="text-sage">✓</span>
                                 {p}
                               </li>
                             ))}
@@ -299,13 +292,13 @@ export default function TimelinePage() {
                       )}
                       {summary.insightsJson.concerns && summary.insightsJson.concerns.length > 0 && (
                         <div>
-                          <span className="text-xs font-medium text-amber-600 uppercase tracking-wide">
+                          <span className="text-xs font-medium text-clay uppercase tracking-wide">
                             Concerns
                           </span>
                           <ul className="mt-1 space-y-1">
                             {summary.insightsJson.concerns.map((c, i) => (
-                              <li key={i} className="text-sm text-slate-600 flex items-start gap-2">
-                                <span className="text-amber-500">!</span>
+                              <li key={i} className="text-sm text-ink-muted flex items-start gap-2">
+                                <span className="text-clay">!</span>
                                 {c}
                               </li>
                             ))}
@@ -325,26 +318,23 @@ export default function TimelinePage() {
                     });
 
                     return (
-                      <div
-                        key={entry.id}
-                        className="bg-white rounded-xl border border-slate-200 p-4 hover:shadow-sm transition"
-                      >
+                      <div key={entry.id} className="card p-4">
                         <div className="flex items-start gap-3">
-                          <div className={`p-2 rounded-lg ${typeColors[entry.type] || typeColors.NOTE}`}>
+                          <div className={`p-2 rounded-xl ${typeColors[entry.type] || typeColors.NOTE}`}>
                             <Icon className="w-5 h-5" />
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-1">
-                              <span className="text-sm font-medium text-slate-900 capitalize">
+                              <span className="text-sm font-medium text-ink capitalize">
                                 {entry.type.toLowerCase()}
                               </span>
-                              <span className="text-xs text-slate-400">{time}</span>
+                              <span className="text-xs text-ink-faint">{time}</span>
                               {entry.moodScore && (
                                 <span className="ml-auto text-lg">{moodEmojis[entry.moodScore - 1]}</span>
                               )}
                             </div>
-                            <p className="text-slate-600">{entry.freeText}</p>
-                            <p className="text-xs text-slate-400 mt-2">by {entry.author.name}</p>
+                            <p className="text-ink-muted">{entry.freeText}</p>
+                            <p className="text-xs text-ink-faint mt-2">by {entry.author.name}</p>
                           </div>
                         </div>
                       </div>
@@ -359,4 +349,3 @@ export default function TimelinePage() {
     </div>
   );
 }
-

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { request } from '@/lib/api';
+import { ShieldCheck } from 'lucide-react';
 
 interface AuthResponse {
   user: { id: string; email: string; name: string };
@@ -52,23 +53,40 @@ export default function SignupPage() {
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4">
-      <div className="w-full max-w-md">
-        <div className="bg-white rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 p-8">
-          <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold text-slate-900">Create account</h1>
-            <p className="text-slate-500 mt-2">Start your caregiving journal</p>
+    <main className="min-h-screen px-6 py-16">
+      <div className="max-w-5xl mx-auto grid gap-10 lg:grid-cols-[1.1fr_0.9fr] items-center">
+        <section className="space-y-6 animate-fade-up">
+          <div className="chip w-fit">CareCircle Journal</div>
+          <h1 className="text-4xl text-ink">Create a shared home for your care notes.</h1>
+          <p className="text-lg text-ink-muted">
+            Invite your circle, keep the daily story consistent, and let patterns surface gently over time.
+          </p>
+          <div className="card-inset p-5 space-y-3">
+            <div className="flex items-center gap-2 text-sage">
+              <ShieldCheck className="w-5 h-5" />
+              <span className="text-xs uppercase tracking-[0.2em]">Privacy-first</span>
+            </div>
+            <p className="text-sm text-ink-muted">
+              Your data stays in your care circle. Export or remove entries at any time.
+            </p>
+          </div>
+        </section>
+
+        <section className="card p-8 animate-fade-up" style={{ animationDelay: '120ms' }}>
+          <div className="mb-8">
+            <h2 className="text-2xl text-ink">Create account</h2>
+            <p className="text-ink-muted mt-2">Start your caregiving journal in minutes.</p>
           </div>
 
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-100 rounded-lg text-red-600 text-sm">
+            <div className="mb-6 rounded-2xl border border-[rgba(198,107,78,0.3)] bg-[rgba(198,107,78,0.12)] p-4 text-sm text-[#7b3f2b]">
               {error}
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-slate-700 mb-2">
+              <label htmlFor="name" className="block text-sm font-medium text-ink-muted mb-2">
                 Name
               </label>
               <input
@@ -78,13 +96,13 @@ export default function SignupPage() {
                 onChange={(e) => setName(e.target.value)}
                 required
                 minLength={2}
-                className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition text-slate-900 placeholder-slate-400"
+                className="input w-full text-ink placeholder:text-ink-faint"
                 placeholder="Your name"
               />
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-2">
+              <label htmlFor="email" className="block text-sm font-medium text-ink-muted mb-2">
                 Email
               </label>
               <input
@@ -93,13 +111,13 @@ export default function SignupPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition text-slate-900 placeholder-slate-400"
+                className="input w-full text-ink placeholder:text-ink-faint"
                 placeholder="you@example.com"
               />
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-slate-700 mb-2">
+              <label htmlFor="password" className="block text-sm font-medium text-ink-muted mb-2">
                 Password
               </label>
               <input
@@ -109,13 +127,13 @@ export default function SignupPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength={8}
-                className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition text-slate-900"
+                className="input w-full text-ink"
                 placeholder="Min. 8 characters"
               />
             </div>
 
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-slate-700 mb-2">
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-ink-muted mb-2">
                 Confirm Password
               </label>
               <input
@@ -124,29 +142,24 @@ export default function SignupPage() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
-                className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition text-slate-900"
+                className="input w-full text-ink"
                 placeholder="Confirm your password"
               />
             </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold rounded-lg transition shadow-lg shadow-blue-500/25"
-            >
+            <button type="submit" disabled={loading} className="btn-primary w-full">
               {loading ? 'Creating account...' : 'Create account'}
             </button>
           </form>
 
-          <div className="mt-6 text-center">
-            <span className="text-slate-500">Already have an account? </span>
-            <Link href="/login" className="text-blue-600 hover:text-blue-700 font-medium">
+          <div className="mt-6 text-center text-sm text-ink-muted">
+            Already have an account?{' '}
+            <Link href="/login" className="text-clay font-semibold">
               Sign in
             </Link>
           </div>
-        </div>
+        </section>
       </div>
     </main>
   );
 }
-
