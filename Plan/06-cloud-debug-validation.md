@@ -25,18 +25,19 @@ Deploy a debug container to validate VPC connectivity, Spaces access, and Gradie
 - [x] Workflow created: `.github/workflows/deploy-debug.yml`
 - [x] Workflow uses `digitalocean/app_action/deploy@v2` to inject secrets
 - [x] All GitHub secrets configured (including DIGITALOCEAN_ACCESS_TOKEN)
-- [ ] Commit workflow files to repository
-- [ ] Deploy via GitHub Actions:
-  - Push workflow files to repository
-  - Go to: Actions → "Deploy Debug Container" → Run workflow
-  - OR: Push changes to `.do/app-debug.yaml` to trigger automatically
+- [x] Workflow files committed to repository
+- [x] Workflow parameter fixed (`app_spec_location` instead of `spec_path`)
+- [ ] **BLOCKED**: Debug container image (`ghcr.io/bikramkgupta/do-app-debug-container-python`) is private
+  - App Platform cannot access private GHCR images without registry authentication
+  - **Action Required**: Make the image public OR use a public debug image
+- [ ] Deploy via GitHub Actions (after image is accessible)
 - [ ] Debug App ID captured after deployment
 
 **Option B: Via Local doctl (Not Recommended)**
 - [x] Script created: `scripts/deploy-debug-local.sh`
-- [ ] Note: Debug container image requires GHCR authentication
-- [ ] doctl cannot access private GHCR images directly
-- [ ] Use GitHub Actions method instead (handles GHCR auth automatically)
+- [x] Note: Debug container image requires GHCR authentication
+- [x] doctl cannot access private GHCR images directly
+- [ ] Use GitHub Actions method after image is made public
 
 ### 6.3 Run Connectivity Tests
 
