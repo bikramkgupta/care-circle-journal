@@ -50,7 +50,10 @@ RUN pnpm install --frozen-lockfile --prod
 # Copy built files
 COPY --from=builder /app/packages/shared ./packages/shared
 COPY --from=builder /app/apps/worker/dist ./apps/worker/dist
-COPY --from=builder /app/node_modules/.pnpm/@prisma+client*/node_modules/.prisma ./node_modules/.prisma
+# Copy Prisma client and engine to pnpm structure
+RUN mkdir -p ./node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules
+COPY --from=builder /app/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client ./node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client
+COPY --from=builder /app/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/.prisma ./node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/.prisma
 # Update shared package.json to point to JS files for production
 RUN sed -i 's|"main": "./src/index.ts"|"main": "./src/index.js"|' packages/shared/package.json && \
     sed -i 's|"types": "./src/index.ts"|"types": "./src/index.d.ts"|' packages/shared/package.json
