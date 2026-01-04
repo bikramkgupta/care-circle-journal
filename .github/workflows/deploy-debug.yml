@@ -27,5 +27,5 @@ jobs:
           GRADIENT_API_KEY: ${{ secrets.GRADIENT_API_KEY }}
         with:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
-          spec_path: .do/app-debug.yaml
+          app_spec_location: .do/app-debug.yaml
 
