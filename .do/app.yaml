@@ -15,16 +15,6 @@ services:
     routes:
       - path: /api
         preserve_path_prefix: false
-      - path: /auth
-        preserve_path_prefix: true
-      - path: /care-profiles
-        preserve_path_prefix: true
-      - path: /entries
-        preserve_path_prefix: true
-      - path: /summaries
-        preserve_path_prefix: true
-      - path: /media
-        preserve_path_prefix: true
     health_check:
       http_path: /health
       initial_delay_seconds: 10
