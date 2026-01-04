@@ -1,6 +1,21 @@
 name: care-circle-journal
 region: nyc
 
+# Path routing
+ingress:
+  rules:
+    - match:
+        path:
+          prefix: /api
+      component:
+        name: api
+        preserve_path_prefix: false
+    - match:
+        path:
+          prefix: /
+      component:
+        name: frontend
+
 # Service: API
 services:
   - name: api
@@ -12,9 +27,6 @@ services:
     instance_size_slug: apps-s-1vcpu-1gb
     instance_count: 1
     http_port: 8080
-    routes:
-      - path: /api
-        preserve_path_prefix: false
     health_check:
       http_path: /health
       initial_delay_seconds: 10
@@ -66,8 +78,6 @@ services:
     instance_size_slug: apps-s-1vcpu-1gb
     instance_count: 1
     http_port: 3000
-    routes:
-      - path: /
     health_check:
       http_path: /health
       initial_delay_seconds: 10
